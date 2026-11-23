@@ -52,7 +52,7 @@
 **Files:** Modify `domain/aggregates/UserAggregate.java`, `domain/valueobjects/user/credentials/Username.java`, `domain/service/RawPasswordPolicy.java`. Test: `src/test/java/com/portfolioproject/authservice/domain/UserAggregateTest.java`, `UsernameTest.java`, `RawPasswordPolicyTest.java`.
 
 **Interfaces (produces):**
-- `static UserAggregate create(Username username, Password password, RoleType role)`: status ACTIVE, roles = {role}, new id, records `UserCreatedEvent(UserID id, Username username)` (rename of `NewUserAggregateCreatedEvent`).
+- `static UserAggregate create(Username username, Password password, RoleType role)`: status ACTIVE, roles = {role}, new id, records `UserCreatedEvent(UserID id, Username username)` (rename of `UserCreatedEvent`).
 - `boolean hasPermission(Permission p)`, `Set<String> permissionNames()` (used by the token issuer).
 
 - [ ] **Step 1: Red tests**
