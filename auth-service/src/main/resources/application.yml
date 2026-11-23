@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${AUTH_DB_HOST:localhost}:${AUTH_DB_PORT:5432}/${AUTH_DB_NAME:coffeeshop_auth}
+    driver-class-name: org.postgresql.Driver
+    username: ${AUTH_DB_USERNAME:postgres}
+    password: ${AUTH_DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  application:
+    name: Auth-Service
