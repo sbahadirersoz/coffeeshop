@@ -2,6 +2,7 @@ package com.portfolioproject.authservice.infrastructure.adapters;
 
 import com.portfolioproject.authservice.domain.aggregates.UserAggregate;
 import com.portfolioproject.authservice.domain.repositories.SecurityUserRepository;
+import com.portfolioproject.authservice.domain.valueobjects.user.credentials.RoleType;
 import com.portfolioproject.authservice.domain.valueobjects.user.credentials.Username;
 import com.portfolioproject.authservice.domain.valueobjects.user.UserID;
 import com.portfolioproject.authservice.infrastructure.mapper.UserMapper;
@@ -38,6 +39,11 @@ public class SecurityUserRepositoryAdapter implements SecurityUserRepository {
     public boolean existsByUsername(Username username)
     {
         return dataRepo.existsByUsername(username.getValue());
+    }
+
+    @Override
+    public boolean existsByRole(RoleType role) {
+        return dataRepo.existsByRolesContaining(role);
     }
 
     @Override

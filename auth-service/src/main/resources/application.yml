@@ -6,6 +6,6 @@ spring:
     password: ${AUTH_DB_PASSWORD:postgres}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   application:
     name: Auth-Service
