@@ -1,0 +1,49 @@
+package com.portfolioproject.authservice.application.usecases;
+
+import com.portfolioproject.authservice.application.commands.CreateStaffUserCommand;
+import com.portfolioproject.authservice.application.ports.PasswordHasher;
+import com.portfolioproject.authservice.domain.aggregates.UserAggregate;
+import com.portfolioproject.authservice.domain.errors.AuthErrors;
+import com.portfolioproject.authservice.domain.repositories.SecurityUserRepository;
+import com.portfolioproject.authservice.domain.service.RawPasswordPolicy;
+import com.portfolioproject.authservice.domain.valueobjects.user.credentials.Password;
+import com.portfolioproject.authservice.domain.valueobjects.user.credentials.Username;
+import com.portfolioproject.commonshared.Abstracts.ResultPattern.Result;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+@Service
+public class CreateStaffUserUseCase {
+    private final PasswordHasher hasher;
+    private final SecurityUserRepository repository;
+
+
+    public CreateStaffUserUseCase(PasswordHasher hasher, SecurityUserRepository repository) {
+        this.hasher = hasher;
+        this.repository = repository;
+    }
+
+    @Transactional
+    public Result<UUID> execute(CreateStaffUserCommand cmd)
+    {
+
+        var usernameResult = Username.create(cmd.username());
+        if (usernameResult.isFailure()) return Result.failure(usernameResult.getError());
+
+        var  roleValidation  =  cmd.type();
+        if (roleValidation == null)  return Result.failure(AuthErrors.ROLE_IS_REQUIRED);
+
+        Result<Void> rawpassValidation = RawPasswordPolicy.validate(cmd.rawPassword());
+        if (rawpassValidation.isFailure()) return Result.failure(rawpassValidation.getError());
+
+        if (repository.existsByUsername(usernameResult.getValue())) return Result.failure(AuthErrors.USERNAME_IS_ALREADY_EXIST);
+        var hash = hasher.hash(cmd.rawPassword());
+        var passwordResult = Password.fromHash(hash);
+        UserAggregate userAggregate = UserAggregate.create(usernameResult.getValue(), passwordResult, cmd.type());
+        repository.save(userAggregate);
+        return Result.success(userAggregate.getId().getUserID());
+    }
+
+}

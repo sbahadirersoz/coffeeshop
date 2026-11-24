@@ -41,7 +41,7 @@
 - [ ] Move `AppPermissions`, `Permission`, `PasswordConstraints`, `UsernameConstraints` and the auth constants of `AuthErrors` into `auth-service` (`domain.security`, `domain.errors.AuthErrors`). Fix the copy-paste: `*_UNDER_MIN_VALUE` must not say `OVER_MAX`. Keep `ErrorDetails(String desc, String code)` and `NONE` in common-shared.
 - [ ] `PasswordConstraints.MaxPassLen = 64`.
 - [ ] Delete `PasswordManager`, `PasswordManagerImpl`, `AuthenticationService`, `ValueObjectErrors`, `UserEmailAdressChangedEvent`; remove `email` from the command.
-- [ ] `RegisterUserUseCase`: make it compile with `return Result.success();` (Task 3 replaces it).
+- [ ] `CreateStaffUserUseCase`: make it compile with `return Result.success();` (Task 3 replaces it).
 - [ ] Root `pom.xml`: remove the trailing space in `${starter.version} `.
 - [ ] Compose: database `coffeeshop_auth`, user and password from `.env`. Fix `.env`: no spaces around keys, no duplicate `AUTH_DB_PORT`.
 - [ ] Verify: `./mvnw -q -DskipTests package` succeeds.
@@ -94,7 +94,7 @@ existsByRole_falseOnEmptyDb_trueAfterAdminSaved()
 
 ### Task 3: CreateStaffUser use case
 
-**Files:** rename `RegisterUserUseCase` -> `application/usecases/CreateStaffUserUseCase.java`; command `CreateStaffUserCommand(String username, String rawPassword, RoleType role)`. Port `application/ports/PasswordHasher` gets `boolean matches(String raw, String hash)`; `PasswordHasherImpl` uses the `PasswordEncoder` bean. Test: `application/CreateStaffUserUseCaseTest.java` (Mockito repo, fake hasher returning `"hashed:" + raw`).
+**Files:** rename `CreateStaffUserUseCase` -> `application/usecases/CreateStaffUserUseCase.java`; command `CreateStaffUserCommand(String username, String rawPassword, RoleType role)`. Port `application/ports/PasswordHasher` gets `boolean matches(String raw, String hash)`; `PasswordHasherImpl` uses the `PasswordEncoder` bean. Test: `application/CreateStaffUserUseCaseTest.java` (Mockito repo, fake hasher returning `"hashed:" + raw`).
 
 **Interfaces (produces):** `Result<UUID> execute(CreateStaffUserCommand cmd)`; error `AuthErrors.ROLE_IS_REQUIRED` (code `Auth.Role.Required`).
 
