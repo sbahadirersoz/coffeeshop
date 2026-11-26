@@ -13,7 +13,7 @@ public class UsernameAvailabilityPolicy {
         this.repo = repo;
     }
 
-    public Result<Void> ensureAvailable(Username username) {
+    public  Result<Void> ensureAvailable(Username username) {
         if (repo.existsByUsername(username))
         {
             return Result.failure(AuthErrors.USERNAME_IS_ALREADY_EXIST);

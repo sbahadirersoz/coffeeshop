@@ -1,6 +1,5 @@
-package com.portfolioproject.authservice.application.usecases;
+package com.portfolioproject.authservice.application.commands.createStaff;
 
-import com.portfolioproject.authservice.application.commands.CreateStaffUserCommand;
 import com.portfolioproject.authservice.application.ports.PasswordHasher;
 import com.portfolioproject.authservice.domain.aggregates.UserAggregate;
 import com.portfolioproject.authservice.domain.errors.AuthErrors;
@@ -11,8 +10,6 @@ import com.portfolioproject.authservice.domain.valueobjects.user.credentials.Use
 import com.portfolioproject.commonshared.Abstracts.ResultPattern.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 public class CreateStaffUserUseCase {
@@ -26,7 +23,7 @@ public class CreateStaffUserUseCase {
     }
 
     @Transactional
-    public Result<UUID> execute(CreateStaffUserCommand cmd)
+    public Result<CreateStaffUserCommandResponse> execute(CreateStaffUserCommand cmd)
     {
 
         var usernameResult = Username.create(cmd.username());
@@ -38,12 +35,11 @@ public class CreateStaffUserUseCase {
         Result<Void> rawpassValidation = RawPasswordPolicy.validate(cmd.rawPassword());
         if (rawpassValidation.isFailure()) return Result.failure(rawpassValidation.getError());
 
-        if (repository.existsByUsername(usernameResult.getValue())) return Result.failure(AuthErrors.USERNAME_IS_ALREADY_EXIST);
         var hash = hasher.hash(cmd.rawPassword());
         var passwordResult = Password.fromHash(hash);
         UserAggregate userAggregate = UserAggregate.create(usernameResult.getValue(), passwordResult, cmd.type());
         repository.save(userAggregate);
-        return Result.success(userAggregate.getId().getUserID());
+        return Result.success();
     }
 
 }

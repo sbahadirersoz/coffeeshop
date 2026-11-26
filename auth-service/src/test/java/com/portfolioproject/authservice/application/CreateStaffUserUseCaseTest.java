@@ -1,7 +1,7 @@
 package com.portfolioproject.authservice.application;
 
-import com.portfolioproject.authservice.application.usecases.CreateStaffUserUseCase;
-import com.portfolioproject.authservice.application.commands.CreateStaffUserCommand;
+import com.portfolioproject.authservice.application.commands.createStaff.CreateStaffUserUseCase;
+import com.portfolioproject.authservice.application.commands.createStaff.CreateStaffUserCommand;
 import com.portfolioproject.authservice.application.ports.PasswordHasher;
 import com.portfolioproject.authservice.domain.aggregates.UserAggregate;
 import com.portfolioproject.authservice.domain.errors.AuthErrors;
@@ -77,7 +77,7 @@ class CreateStaffUserUseCaseTest {
     void takenUsername_returnsUsernameExists_savesNothing() {
         when(repository.existsByUsername(name("waiter01"))).thenReturn(true);
 
-        Result<UUID> result = useCase.execute(new com.portfolioproject.authservice.application.commands.CreateStaffUserCommand("waiter01", "secret123", RoleType.WAITER));
+        Result<UUID> result = useCase.execute(new CreateStaffUserCommand("waiter01", "secret123", RoleType.WAITER));
 
         assertThat(result.isFailure()).isTrue();
         assertThat(result.getError()).isEqualTo(AuthErrors.USERNAME_IS_ALREADY_EXIST);
@@ -89,7 +89,7 @@ class CreateStaffUserUseCaseTest {
         // stored as "waiter01"; " WAITER01" must be trimmed + lowercased before the check
         when(repository.existsByUsername(name("waiter01"))).thenReturn(true);
 
-        Result<UUID> result = useCase.execute(new com.portfolioproject.authservice.application.commands.CreateStaffUserCommand(" WAITER01", "secret123", RoleType.WAITER));
+        Result<UUID> result = useCase.execute(new CreateStaffUserCommand(" WAITER01", "secret123", RoleType.WAITER));
 
         assertThat(result.getError()).isEqualTo(AuthErrors.USERNAME_IS_ALREADY_EXIST);
         verify(repository, never()).save(any());
@@ -97,7 +97,7 @@ class CreateStaffUserUseCaseTest {
 
     @Test
     void shortPassword_returnsPasswordTooShort_savesNothing() {
-        Result<UUID> result = useCase.execute(new com.portfolioproject.authservice.application.commands.CreateStaffUserCommand("waiter01", "1234567", RoleType.WAITER));
+        Result<UUID> result = useCase.execute(new CreateStaffUserCommand("waiter01", "1234567", RoleType.WAITER));
 
         assertThat(result.getError()).isEqualTo(AuthErrors.PASSWORD_LEN_UNDER_MIN_VALUE);
         verify(repository, never()).save(any());

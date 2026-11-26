@@ -1,6 +1,5 @@
 package com.portfolioproject.authservice.infrastructure.config;
 
-import com.portfolioproject.authservice.infrastructure.services.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,10 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig
 {
-    private  final UserDetailsServiceImpl service;
 
-    public SecurityConfig(UserDetailsServiceImpl service) {
-        this.service = service;
+    public SecurityConfig() {
+
     }
 
     @Bean
@@ -32,18 +30,11 @@ public class SecurityConfig
         .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/api/v1/**").permitAll()
                         .anyRequest().authenticated()
-        )
-                .authenticationProvider(authProvider());
+        );
         return http.build();
     }
 
-    @Bean
-    public AuthenticationProvider  authProvider()
-    {
-        DaoAuthenticationProvider  provider  = new DaoAuthenticationProvider(service);
-        provider.setPasswordEncoder(encoder());
-        return provider;
-    }
+
 
 
     @Bean

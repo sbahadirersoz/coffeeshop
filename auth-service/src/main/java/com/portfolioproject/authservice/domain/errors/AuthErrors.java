@@ -18,6 +18,6 @@ public final class AuthErrors
     public static final ErrorDetails ROLE_IS_REQUIRED = new ErrorDetails("UserRoleRequired","Auth.Role.Required");
 
 
-    public static final ErrorDetails BAD_PASSWORD_CREDENTIALS = new ErrorDetails("GivenPasswordDidntMatchWithUsername","Auth.Password.DidntMatch");
+    public static final ErrorDetails BAD_CREDENTIALS = new ErrorDetails("Bad Credentials","Auth.Credentials.BadCredentials");
 
 }
